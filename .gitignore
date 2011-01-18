@@ -1,0 +1,8 @@
+# Ignore temporary files
+*~
+*.o
+Makefile
+moc_*
+ui_*
+recrut
+recrut.pro.user
