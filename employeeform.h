@@ -1,7 +1,10 @@
+/*
+ * file: employeeform.h
+ */
+
 #ifndef EMPLOYEEFORM_H
 #define EMPLOYEEFORM_H
 
-// #include <QDialog>
 #include <QtGui>
 #include <QtSql>
 

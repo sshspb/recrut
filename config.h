@@ -1,3 +1,7 @@
+/*
+ * file: config.h
+ */
+
 #ifndef CONFIG_H
 #define CONFIG_H
 
@@ -5,6 +9,7 @@
 
 QT_BEGIN_NAMESPACE
 class QString;
+//class QSettings;
 QT_END_NAMESPACE
 
 namespace Recruter {
@@ -12,7 +17,7 @@ namespace Recruter {
 class Config {
 
 private:
-    QSettings settings(const QString & organization, const QString & application = QString(), QObject * parent = 0);
+    QSettings settings;
 
 public:
     Config();

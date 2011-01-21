@@ -1,11 +1,13 @@
+/*
+ * file: config.cpp
+ */
+
 #include "config.h"
 
 using namespace Recruter;
 
-Config::Config()
+Config::Config() : settings("Personalis", "Recruter")
 {
-//    settings("Personalis", "Recruter");
-QSettings settings("Personalis", "Recruter");
 }
 
 Config::~Config()

@@ -4,15 +4,7 @@
 
 #include <QtGui>
 #include <QtSql>
-/*
-#include <QDialog>
-#include <QGroupBox>
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QVBoxLayout>
-#include <QGridLayout>
-*/
+
 #include "config.h"
 #include "connection.h"
 

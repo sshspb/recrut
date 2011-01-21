@@ -1,3 +1,7 @@
+/*
+ * file: employeeform.cpp
+ */
+
 #include "employeeform.h"
 #include "ui_employeeform.h"
 
@@ -40,7 +44,6 @@ void EmployeeForm::changeEvent(QEvent *e)
 
 void EmployeeForm::getRecord(QSqlRecord &record)
 {
-//    qDebug() << "editEmployee() nameEdit AFTER :" << ui->nameEdit->text();
     record.setValue(Emp_Name, ui->nameEdit->text());
     record.setValue(Emp_Surname, ui->surnameEdit->text());
     record.setValue(Emp_Dob, ui->dobEdit->date());

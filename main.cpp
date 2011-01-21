@@ -1,3 +1,7 @@
+/*
+ * file: main.cpp
+ */
+
 #include <QApplication>
 
 #include "config.h"
@@ -7,13 +11,13 @@
 using namespace Recruter;
 
 // Определения статических переменных, здесь им выделяется память.
-QSqlDatabase Recruter::Connection::db;
-bool Recruter::Connection::connected;
-QString Recruter::Config::password;
-QString Recruter::Config::login;
-QString Recruter::Config::database;
-QString Recruter::Config::host;
-QString Recruter::Config::driver;
+QSqlDatabase Connection::db;
+bool Connection::connected;
+QString Config::password;
+QString Config::login;
+QString Config::database;
+QString Config::host;
+QString Config::driver;
 
 int main(int argc, char *argv[])
 {

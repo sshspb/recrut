@@ -1,22 +1,13 @@
+/*
+ * file: employee.h
+ */
 
 #ifndef EMPLOYEE_H
 #define EMPLOYEE_H
 
 #include <QtGui>
 #include <QtSql>
-/*
-QT_BEGIN_NAMESPACE
-class QSqlTableModel;
-class QTableView;
-class QGroupBox;
-class QLabel;
-class QLineEdit;
-class QTextEdit;
-class QPushButton;
-class QSqlRecord;
-class QModelIndex;
-QT_END_NAMESPACE
-*/
+
 namespace Recruter {
 
 class Employee : public QDialog
