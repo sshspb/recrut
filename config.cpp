@@ -6,17 +6,31 @@
 
 using namespace Recruter;
 
+// Определения статических атрибутов, здесь им выделится память.
+QString Config::password;
+QString Config::login;
+QString Config::database;
+QString Config::host;
+QString Config::driver;
+
+/*
+ *  класс Config обеспечивает работу с настройками
+ */
 Config::Config() : settings("Personalis", "Recruter")
 {
+//    readSettings();  // считать настройки
 }
 
 Config::~Config()
 {
-    writeSettings();
+    writeSettings();  // сохранить настройки
 }
 
 void Config::readSettings()
 {
+    /*
+     *  чтение настроек из внешней памяти
+     */
     settings.beginGroup("/connection");
     password = settings.value("/password", "").toString();
     login = settings.value("/login", "").toString();
@@ -28,6 +42,9 @@ void Config::readSettings()
 
 void Config::writeSettings()
 {
+    /*
+     *  сохранение настроек во внешней памяти
+     */
     settings.beginGroup("/connection");
     settings.setValue("/password", password);
     settings.setValue("/login", login);

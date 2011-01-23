@@ -5,19 +5,13 @@
 #ifndef CONNECTION_H
 #define CONNECTION_H
 
-#include <QDialog>
+#include <QtGui>
+#include <QtSql>
 
-QT_BEGIN_NAMESPACE
-class QSqlDatabase;
-class QWidget;
-class QGroupBox;
-class QLabel;
-class QLineEdit;
-class QPushButton;
-QT_END_NAMESPACE
+#include "config.h"
 
 namespace Recruter {
-  
+
 class Connection : public QDialog {
 
 Q_OBJECT
@@ -35,6 +29,7 @@ private:
     void setFields();
     void getFields();
     bool connect();
+    Config *config;
     QLabel *loginLabel;
     QLabel *passwordLabel;
     QLabel *driverLabel;

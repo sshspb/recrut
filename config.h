@@ -6,11 +6,7 @@
 #define CONFIG_H
 
 #include <QSettings>
-
-QT_BEGIN_NAMESPACE
-class QString;
-//class QSettings;
-QT_END_NAMESPACE
+#include <QString>
 
 namespace Recruter {
 

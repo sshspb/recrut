@@ -2,24 +2,34 @@
  *  file: connection.cpp
  */
 
-#include <QtGui>
-#include <QtSql>
-
-#include "config.h"
 #include "connection.h"
 
 using namespace Recruter;
 
+// Определения статических атрибутов, здесь им выделится память.
+QSqlDatabase Connection::db;
+bool Connection::connected;
+
+/*
+ *  класс Connection обеспечивает ввод параметров и соединение с базой данных
+ */
 Connection::Connection(QWidget *parent)
     : QDialog(parent)
 {
-    connected = false;
-    createForm();
-    setFields();
+    connected = false;       // сбросить признак "Соединён"
+
+    createForm();            // создать графическую форму
+
+    config = new Config();   // вызвать конструктор класса Config
+    config->readSettings();  // считать настройки
+    setFields();             // заполнить поля начальными значениями
 }
 
 void Connection::createForm()
 {
+   /*
+    * графический интерфейс редактирования параметров соединения с базой данных
+    */
     passwordLabel = new QLabel(tr("Пароль"));
     passwordLineEdit = new QLineEdit;
     passwordLineEdit->setEchoMode(QLineEdit::Password);
@@ -75,6 +85,9 @@ void Connection::createForm()
 
 void Connection::setFields()
 {
+   /*
+    * инициализация полей формы значениями статических атрибутов класса Config
+    */
     passwordLineEdit->setText(Config::password);
     loginLineEdit->setText(Config::login);
     databaseLineEdit->setText(Config::database);
@@ -84,6 +97,9 @@ void Connection::setFields()
 
 void Connection::getFields()
 {
+   /*
+    * присвоение статическим атрибутам класса Config значений из полей формы
+    */
     Config::password = passwordLineEdit->text();
     Config::login = loginLineEdit->text();
     Config::database = databaseLineEdit->text();
@@ -93,11 +109,11 @@ void Connection::getFields()
 
 bool Connection::connect()
 {
-/*
- * Для соединения с базой необходимо вызвать статический
- * метод QSqlDatabase::addDatabase() и в созданном
- * экземпляре класса выполнить метод open().
- */
+   /*
+    * Для соединения с базой необходимо вызвать статический
+    * метод QSqlDatabase::addDatabase() и в созданном
+    * экземпляре класса выполнить метод open().
+    */
     db = QSqlDatabase::addDatabase(Config::driver);
     db.setHostName(Config::host);
     db.setDatabaseName(Config::database);
@@ -108,14 +124,17 @@ bool Connection::connect()
         QSqlError er = db.lastError();
         QMessageBox::information(0, "Error", er.text());
     }
-    return connected;
+    return connected; // возвратить признак соединения
 }
 
 void Connection::accept()
 {
-    getFields();
-    connect();
-    close();
+   /*
+    * слот, вызывается при нажатии на клавишу connectButton ("Соединить")
+    */
+    getFields();  // считать конфигурацию
+    connect();    // произвести соединение
+    close();      // закрыть форму вызывом bool QWidget::close ()   [slot]
 }
 
 

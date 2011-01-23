@@ -4,20 +4,10 @@
 
 #include <QApplication>
 
-#include "config.h"
 #include "connection.h"
 #include "employee.h"
 
 using namespace Recruter;
-
-// Определения статических переменных, здесь им выделяется память.
-QSqlDatabase Connection::db;
-bool Connection::connected;
-QString Config::password;
-QString Config::login;
-QString Config::database;
-QString Config::host;
-QString Config::driver;
 
 int main(int argc, char *argv[])
 {
@@ -25,9 +15,6 @@ int main(int argc, char *argv[])
   
   QTextCodec *codec = QTextCodec::codecForName("UTF-8");  
   QTextCodec::setCodecForTr(codec);
-
-  Config config;
-  config.readSettings();
 
   Connection connection;
   connection.exec();
