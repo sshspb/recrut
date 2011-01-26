@@ -1,6 +1,7 @@
 /*
  * file: employee.cpp
  */
+//#define DEBUG
 
 #include "employeeform.h"
 #include "employee.h"
@@ -177,10 +178,6 @@ void Employee::addEmployee()
   int ret = msgBox.exec();
   if (ret == QMessageBox::Yes)
   {
-//    int row = 0;
-//    if (employeeView->currentIndex().isValid())
-//      row = employeeView->currentIndex().row();
-
     // строку в модели вставим за последней существующей строкой
     int row = employeeModel->rowCount();
     employeeModel->insertRow(row);
@@ -189,27 +186,39 @@ void Employee::addEmployee()
     // передать его через значение QModelIndex QAbstractItemView::currentIndex () const
     employeeView->setCurrentIndex(employeeModel->index(row, Emp_Name));
 
-
     editEmployee();
   }
 }
 
 void Employee::editEmployee()
 {
+#ifdef DEBUG
+qDebug() << "Employee::editEmployee()";
+#endif
    /*
     * редактирование записи работника
     */
-    int row = employeeView->currentIndex().row();  // номер редактируемой строки
-    int id = employeeModel->data(employeeModel->index(row, 0)).toInt(); // PRIMARY KEY
+    // номер редактируемой строки (записи)
+    int row = employeeView->currentIndex().row();
+
     // отправим запись в форму для редактирования
     QSqlRecord record = employeeModel->record(row);
     EmployeeForm employeeForm(record, this);
     employeeForm.exec();
-    employeeForm.getRecord(record);
+
     // заменим запись в модели на отредактированную
+    employeeForm.getRecord(record);
     employeeModel->setRecord (row, record);
+
+    // теперь изменения фиксируем в базе данных
     employeeModel->submitAll();
-    // в submitAll() набор записей перечитался, нумерация строк изменилась, позиционируем по id
+
+    // однако в submitAll() набор всех записей перечитался,
+    // нумерация строк изменилась,
+    // надо позиционировать курсор по значению PRIMARY KEY,
+    // но если строка новая, id ни в employeeModel ни в record нет
+    int id = record.value(Emp_EmpId).toInt(); //
+    if (!id) id = idToInsert;
     row = 0;
     while (employeeModel->data(employeeModel->index(row, 0)) != id
            && row < employeeModel->rowCount())
@@ -245,19 +254,23 @@ void Employee::deleteLanguage()
 {
 }
 
-void Employee::beforeInsertEmployee(QSqlRecord &record)
+void Employee::beforeInsertEmployee(QSqlRecord &recordToInsert)
 {
-    // инициализируем значение полей PRIMARY KEY и даты создания
-//    employeeModel->setData(employeeModel->index(row, Emp_Created), QDate::currentDate());
-    record.setValue(Emp_Created, QDate::currentDate());
+#ifdef DEBUG
+  qDebug() << "Employee::beforeInsertEmployee(QSqlRecord &recordToInsert)";
+#endif
+   /*
+    * Вызывается перед SQL-запросом INSERT, а не перед employeeModel->insertRow()
+    */
+    // инициализируем значение полей даты создания и PRIMARY KEY
+    recordToInsert.setValue(Emp_Created, QDate::currentDate());
     QSqlQuery query;
     query.exec("SELECT nextval('employee_employee_id_seq')");
     if (query.next()) {
-//        employeeModel->setData(employeeModel->index(row, Emp_EmpId), query.value(0));
-        record.setValue(Emp_EmpId, query.value(0));
-
+        idToInsert = query.value(Emp_EmpId).toInt(); // PRIMARY KEY
+        recordToInsert.setValue(Emp_EmpId, idToInsert);
     } else {
-        qDebug() << "addEmployee: ERROR ON SELECT nextval('employee_employee_id_seq') return " << query.value(0).toInt();
+        qDebug() << "Employee::beforeInsertEmployee: ERROR ON SELECT nextval('employee_employee_id_seq') return " << query.value(0).toInt();
     }
 }
 

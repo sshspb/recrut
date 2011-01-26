@@ -76,6 +76,7 @@ private:
     Lan_LanguageLevel = 3,
   };
 
+  int idToInsert;
   QSqlDatabase db;
   QSqlTableModel *employeeModel;
   QSqlTableModel *educationModel;
