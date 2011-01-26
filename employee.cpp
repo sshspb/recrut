@@ -196,15 +196,25 @@ void Employee::addEmployee()
 
 void Employee::editEmployee()
 {
-    QModelIndex index = employeeView->currentIndex();
-    int row = index.row();
+   /*
+    * редактирование записи работника
+    */
+    int row = employeeView->currentIndex().row();  // номер редактируемой строки
+    int id = employeeModel->data(employeeModel->index(row, 0)).toInt(); // PRIMARY KEY
+    // отправим запись в форму для редактирования
     QSqlRecord record = employeeModel->record(row);
     EmployeeForm employeeForm(record, this);
     employeeForm.exec();
     employeeForm.getRecord(record);
+    // заменим запись в модели на отредактированную
     employeeModel->setRecord (row, record);
     employeeModel->submitAll();
-    employeeView->setCurrentIndex(index);
+    // в submitAll() набор записей перечитался, нумерация строк изменилась, позиционируем по id
+    row = 0;
+    while (employeeModel->data(employeeModel->index(row, 0)) != id
+           && row < employeeModel->rowCount())
+        row++;
+    employeeView->setCurrentIndex(employeeModel->index(row, 0));
 }
 
 void Employee::addEducation()

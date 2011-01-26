@@ -250,6 +250,21 @@
    </property>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>nameEdit</tabstop>
+  <tabstop>surnameEdit</tabstop>
+  <tabstop>dobEdit</tabstop>
+  <tabstop>cityEdit</tabstop>
+  <tabstop>phoneEdit</tabstop>
+  <tabstop>maleRadioButton</tabstop>
+  <tabstop>femaleRadioButton</tabstop>
+  <tabstop>emailEdit</tabstop>
+  <tabstop>enotCheckBox</tabstop>
+  <tabstop>computerEdit</tabstop>
+  <tabstop>computer_levelEdit</tabstop>
+  <tabstop>applicationsEdit</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

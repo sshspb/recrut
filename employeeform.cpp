@@ -17,7 +17,7 @@ EmployeeForm::EmployeeForm(QSqlRecord &record, QWidget *parent) :
     ui->cityEdit->setText(record.value(Emp_City).toString());
     ui->phoneEdit->setText(record.value(Emp_Phone).toString());
     ui->maleRadioButton->setChecked(record.value(Emp_Sex).toString() == "m");
-//    femaleRadioButton->setChecked(record->value(Emp_Sex).toString() != "m");
+    ui->femaleRadioButton->setChecked(record.value(Emp_Sex).toString() != "m");
     ui->emailEdit->setText(record.value(Emp_Email).toString());
     ui->enotCheckBox->setChecked(record.value(Emp_EmailNotif).toBool());
     ui->computerEdit->setText(record.value(Emp_Computer).toString());
