@@ -27,11 +27,18 @@ private slots:
     void deleteExperience();
     void deleteLanguage();
     void beforeInsertEmployee(QSqlRecord &record);
-//    void currentEmployeeChange(const QModelIndex &index);
+    void beforeInsertEducation(QSqlRecord &record);
+    void beforeInsertExperience(QSqlRecord &record);
+    void beforeInsertLanguage(QSqlRecord &record);
+    void currentEmployeeChange(const QModelIndex &index);
     void refreshEducationViewHeader();
     void refreshExperienceViewHeader();
     void refreshLanguageViewHeader();
     void editEmployee();
+    void editEducation();
+    void editExperience();
+    void editLanguage();
+    void close();
 
 private:
   enum {
@@ -97,6 +104,7 @@ private:
   QPushButton *buttonDeleteExperience;
   QPushButton *buttonDeleteLanguage;
   QPushButton *buttonExit;
+  void keyPressEvent(QKeyEvent *event);
 };
 
 }
