@@ -26,5 +26,10 @@ int main(int argc, char *argv[])
   // SXGA — 1280×1024
   employee.setGeometry (5, 5, 1000, 700);
   employee.show();
-  return employee.exec();
+
+  int ret = app.exec();
+
+  Connection::db.close();
+
+  return ret;
 }

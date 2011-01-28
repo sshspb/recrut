@@ -32,6 +32,7 @@ Employee::Employee(QWidget *parent)
   employeeModel->setHeaderData(Emp_Created, Qt::Horizontal, tr("Создано"));
   employeeView = new QTableView(this);
   employeeView->setModel(employeeModel);
+  employeeView->setAlternatingRowColors(true);
   employeeView->setSelectionMode(QAbstractItemView::SingleSelection);
 //  employeeView->setSelectionBehavior(QAbstractItemView::SelectRows);
   employeeView->setColumnHidden(Emp_EmpId, true );
@@ -89,8 +90,8 @@ Employee::Employee(QWidget *parent)
   languageView->setItemDelegate(new QSqlRelationalDelegate(languageView));
   languageView->setSelectionMode(QAbstractItemView::SingleSelection);
 //  languageView->setSelectionBehavior(QAbstractItemView::SelectRows);
-  languageView->setColumnHidden(Lan_LanId, true);
-  languageView->setColumnHidden(Lan_EmpId, true);
+//  languageView->setColumnHidden(Lan_LanId, true);
+//  languageView->setColumnHidden(Lan_EmpId, true);
 
   buttonExit = new QPushButton(tr("Выход"), this);
   buttonAddEmployee = new QPushButton(tr("Добавить работника"), this);
