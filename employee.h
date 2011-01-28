@@ -30,7 +30,8 @@ private slots:
     void beforeInsertEducation(QSqlRecord &record);
     void beforeInsertExperience(QSqlRecord &record);
     void beforeInsertLanguage(QSqlRecord &record);
-    void currentEmployeeChange(const QModelIndex &index);
+    void currentEmployeeChange(const QModelIndex & current, const QModelIndex & previous);
+    void currentExperienceChange(const QModelIndex & current, const QModelIndex & previous);
     void refreshEducationViewHeader();
     void refreshExperienceViewHeader();
     void refreshLanguageViewHeader();
@@ -93,7 +94,7 @@ private:
   QTableView *educationView;
   QTableView *experienceView;
   QTableView *languageView;
-  QTextEdit *experienceTextEdit;
+  QPlainTextEdit *experienceTextEdit;
   QPushButton *buttonAddEmployee;
   QPushButton *buttonEditEmployee;
   QPushButton *buttonAddEducation;

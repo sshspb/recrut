@@ -55,7 +55,7 @@ Employee::Employee(QWidget *parent)
   educationView->setColumnHidden(Edu_EduId, true );
   educationView->setColumnHidden(Edu_EmpId, true );
 
-  experienceTextEdit = new QTextEdit;
+  experienceTextEdit = new QPlainTextEdit;
 
   experienceModel = new QSqlTableModel(this);
   experienceModel->setEditStrategy (QSqlTableModel::OnManualSubmit);
@@ -71,8 +71,8 @@ Employee::Employee(QWidget *parent)
   experienceView->setModel(experienceModel);
   experienceView->setSelectionMode(QAbstractItemView::SingleSelection);
 //  experienceView->setSelectionBehavior(QAbstractItemView::SelectRows);
-  experienceView->setColumnHidden(Exp_ExpId, true );
-  experienceView->setColumnHidden(Exp_EmpId, true );
+//  experienceView->setColumnHidden(Exp_ExpId, true );
+//  experienceView->setColumnHidden(Exp_EmpId, true );
 
   languageModel = new QSqlRelationalTableModel(this);
   languageModel->setEditStrategy (QSqlTableModel::OnManualSubmit);
@@ -98,10 +98,11 @@ Employee::Employee(QWidget *parent)
   buttonDeleteEmployee = new QPushButton(tr("Удалить работника"), this); buttonDeleteEmployee->setEnabled(false);
   buttonAddEducation = new QPushButton(tr("Добавить образование"), this);
   buttonDeleteEducation = new QPushButton(tr("Удалить образование"), this); buttonDeleteEducation->setEnabled(false);
-  buttonAddExperience = new QPushButton(tr("Добавить работу"), this); buttonAddExperience->setEnabled(false);
+  buttonAddExperience = new QPushButton(tr("Добавить работу"), this);
   buttonDeleteExperience = new QPushButton(tr("Удалить  работу"), this); buttonDeleteExperience->setEnabled(false);
   buttonAddLanguage = new QPushButton(tr("Добавить язык"), this);
   buttonDeleteLanguage = new QPushButton(tr("Удалить язык"), this); buttonDeleteLanguage->setEnabled(false);
+
   connect(buttonAddEmployee, SIGNAL(clicked()), this, SLOT(addEmployee()));
   connect(buttonEditEmployee, SIGNAL(clicked()), this, SLOT(editEmployee()));
   connect(buttonAddEducation, SIGNAL(clicked()), this, SLOT(addEducation()));
@@ -112,9 +113,17 @@ Employee::Employee(QWidget *parent)
   connect(buttonDeleteExperience, SIGNAL(clicked()), this, SLOT(deleteExperience()));
   connect(buttonDeleteLanguage, SIGNAL(clicked()), this, SLOT(deleteLanguage()));
   connect(buttonExit, SIGNAL(clicked()), this, SLOT(close()));
+  /*
+  void QItemSelectionModel::currentRowChanged ( const QModelIndex & current, const QModelIndex & previous )   [signal]
+  This signal is emitted if the current item changes and its row is different to the row of the previous current item.
+  */
   connect(employeeView->selectionModel(),
           SIGNAL(currentRowChanged(const QModelIndex &, const QModelIndex &)),
-          this, SLOT(currentEmployeeChange(const QModelIndex &)));
+          this, SLOT(currentEmployeeChange(const QModelIndex &, const QModelIndex &)));
+  connect(experienceView->selectionModel(),
+          SIGNAL(currentRowChanged(const QModelIndex &, const QModelIndex &)),
+          this, SLOT(currentExperienceChange(const QModelIndex &, const QModelIndex &)));
+
   connect(employeeModel, SIGNAL(beforeInsert(QSqlRecord&)),
           this, SLOT(beforeInsertEmployee(QSqlRecord&)));
   connect(educationModel, SIGNAL(beforeInsert(QSqlRecord&)),
@@ -123,6 +132,7 @@ Employee::Employee(QWidget *parent)
           this, SLOT(beforeInsertExperience(QSqlRecord&)));
   connect(languageModel, SIGNAL(beforeInsert(QSqlRecord&)),
           this, SLOT(beforeInsertLanguage(QSqlRecord&)));
+
   connect(educationModel, SIGNAL(rowsInserted(const QModelIndex &, int, int)),
           this, SLOT(refreshEducationViewHeader()));
   connect(experienceModel, SIGNAL(rowsInserted(const QModelIndex &, int, int)),
@@ -202,6 +212,25 @@ void Employee::addEmployee()
   }
 }
 
+void Employee::addEducation()
+{
+    int row = educationModel->rowCount();
+    educationModel->insertRow(row);
+}
+
+void Employee::addExperience()
+{
+qDebug() << "Employee::addExperience()";
+    int row = experienceModel->rowCount();
+    experienceModel->insertRow(row);
+}
+
+void Employee::addLanguage()
+{
+    int row = languageModel->rowCount();
+    languageModel->insertRow(row);
+}
+
 void Employee::editEmployee()
 {
    /*
@@ -247,24 +276,6 @@ void Employee::editLanguage()
 {
 }
 
-void Employee::addEducation()
-{
-    int row = educationModel->rowCount();
-    educationModel->insertRow(row);
-}
-
-void Employee::addExperience()
-{
-    int row = experienceModel->rowCount();
-    experienceModel->insertRow(row);
-}
-
-void Employee::addLanguage()
-{
-    int row = languageModel->rowCount();
-    languageModel->insertRow(row);
-}
-
 void Employee::deleteEmployee()
 {
 }
@@ -280,6 +291,21 @@ void Employee::deleteExperience()
 void Employee::deleteLanguage()
 {
 }
+
+/*
+void QSqlTableModel::beforeInsert ( QSqlRecord & record )   [signal]
+
+This signal is emitted by insertRowIntoTable() before a new row is inserted
+into the currently active database table. The values that are about to be
+inserted are stored in record and can be modified before they will be inserted.
+
+void QSqlTableModel::primeInsert ( int row, QSqlRecord & record )   [signal]
+
+This signal is emitted by insertRows(), when an insertion is initiated
+in the given row of the currently active database table.
+The record parameter can be written to (since it is a reference),
+for example to populate some fields with default values.
+*/
 
 void Employee::beforeInsertEmployee(QSqlRecord &recordToInsert)
 {
@@ -352,7 +378,8 @@ void Employee::beforeInsertLanguage(QSqlRecord &recordToInsert)
     }
 }
 
-void Employee::currentEmployeeChange(const QModelIndex & employeeIndex)
+//void Employee::currentEmployeeChange(const QModelIndex & current)
+void Employee::currentEmployeeChange(const QModelIndex & current, const QModelIndex & previous )
 {
    /*
     * При перемещении курсора в employeeView на другого работника
@@ -364,18 +391,54 @@ void Employee::currentEmployeeChange(const QModelIndex & employeeIndex)
     languageModel->submitAll();
 
     // новые выборки в дочерних таблицах по FOREIGN KEY employee_id
-    if (!employeeIndex.isValid())
+    if (!current.isValid())
         return;
-    QVariant id = employeeModel->data(employeeModel->index(employeeIndex.row(), Emp_EmpId));
+    QVariant id = employeeModel->data(employeeModel->index(current.row(), Emp_EmpId));
     QString clause = QString("employee_id = " + id.toString());
+
     educationModel->setFilter(clause);
     educationModel->select();
+
     experienceModel->setFilter(clause);
     experienceModel->select();
+    // для отображения в experienceTextEdit данных из первой записи
+    // инициируем вызов слота currentExperienceChange() для чего
+    // установим в представлении experienceView текущий item at index, при этом
+    // the item is also be selected, и тогда сгенерируется сигнал currentRowChanged()
+    // который обеспечит нам вызов слота currentExperienceChange()
+    experienceView->setCurrentIndex(experienceModel->index(0,4));
+
     languageModel->setFilter(clause);
     languageModel->select();
+
     // при добавление записей в дочерних таблицах понадобится FOREIGN KEY
     idToInsert = id.toInt();
+}
+
+void Employee::currentExperienceChange(const QModelIndex & current, const QModelIndex & previous )
+{
+//qDebug();
+//qDebug() << "Employee::currentExperienceChange(const QModelIndex & current, const QModelIndex & previous )";
+//qDebug() << "QModelIndex & current " << current << ", current.isValid() = " << current.isValid();
+//qDebug() << "QModelIndex & previous "<< previous << ", previous.isValid() = " << previous.isValid();
+   /*
+    * При перемещении курсора в experienceView на другого работника
+    * требуется отработать представление experienceTextEdit
+    */
+    // если были изменения в experienceTextEdit запомнить в предыдущей записи
+    if (previous.isValid() && experienceTextEdit->document()->isModified()) {
+        experienceModel->setData(experienceModel->index(previous.row(), Exp_Experience),
+                                 experienceTextEdit->toPlainText ());
+    }
+    experienceTextEdit->document()->setModified(false);
+    // отобразить в experienceTextEdit данные текущей записи
+    if (current.isValid()) {
+        experienceTextEdit->setPlainText(
+                experienceModel->data(experienceModel->index(current.row(), Exp_Experience)).toString());
+    }
+    else {
+        experienceTextEdit->setPlainText(QString());
+    }
 }
 
 void Employee::refreshEducationViewHeader()
