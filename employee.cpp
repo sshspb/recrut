@@ -20,7 +20,7 @@ Employee::Employee(QWidget *parent)
   employeeModel->setHeaderData(Emp_EmpId, Qt::Horizontal, tr("ID"));
   employeeModel->setHeaderData(Emp_Name, Qt::Horizontal, tr("Имя Отчество"));
   employeeModel->setHeaderData(Emp_Surname, Qt::Horizontal, tr("Фамилия"));
-  employeeModel->setHeaderData(Emp_Dob, Qt::Horizontal, tr("Добавлено"));
+  employeeModel->setHeaderData(Emp_Dob, Qt::Horizontal, tr("Добавл"));
   employeeModel->setHeaderData(Emp_City, Qt::Horizontal, tr("Город"));
   employeeModel->setHeaderData(Emp_Phone, Qt::Horizontal, tr("Телефон"));
   employeeModel->setHeaderData(Emp_Sex, Qt::Horizontal, tr("Пол"));
@@ -32,6 +32,24 @@ Employee::Employee(QWidget *parent)
   employeeModel->setHeaderData(Emp_Created, Qt::Horizontal, tr("Создано"));
   employeeView = new QTableView(this);
   employeeView->setModel(employeeModel);
+  employeeView->verticalHeader()->setVisible(false);
+  employeeView->setShowGrid(false);
+//    view->resizeRowsToContents();
+//    view->resizeColumnsToContents();
+  for(int i = 0; i < employeeModel->rowCount(); i++)
+      employeeView->setRowHeight(i, 16);
+  employeeView->setColumnWidth (Emp_Name, 100);
+  employeeView->setColumnWidth (Emp_Surname, 80);
+  employeeView->setColumnWidth (Emp_Dob, 60);
+  employeeView->setColumnWidth (Emp_City, 80);
+  employeeView->setColumnWidth (Emp_Phone, 100);
+  employeeView->setColumnWidth (Emp_Sex, 30);
+  employeeView->setColumnWidth (Emp_Email, 100);
+  employeeView->setColumnWidth (Emp_EmailNotif, 45);
+  employeeView->setColumnWidth (Emp_Computer, 80);
+  employeeView->setColumnWidth (Emp_CompLevel, 50);
+  employeeView->setColumnWidth (Emp_Application, 100);
+  employeeView->setColumnWidth (Emp_Created, 60);
   employeeView->setAlternatingRowColors(true);
   employeeView->setSelectionMode(QAbstractItemView::SingleSelection);
 //  employeeView->setSelectionBehavior(QAbstractItemView::SelectRows);
