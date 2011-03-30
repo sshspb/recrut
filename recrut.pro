@@ -9,12 +9,16 @@ QT += sql
 
 # Input
 HEADERS += connection.h \
-    employee.h \
     employeeform.h \
-    config.h
+    config.h \
+    employeeview.h \
+    employeesview.h
+#    employee.h \
 FORMS += employeeform.ui
 SOURCES += connection.cpp \
-    employee.cpp \
     employeeform.cpp \
     main.cpp \
-    config.cpp
+    config.cpp \
+    employeeview.cpp \
+    employeesview.cpp
+#    employee.cpp \
